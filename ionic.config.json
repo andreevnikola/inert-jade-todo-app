@@ -1,0 +1,8 @@
+{
+  "name": "InertJadeTodoApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "0902a92b"
+}
