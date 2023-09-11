@@ -98,7 +98,6 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
               >
                 <div slot="label">Phone number</div>
               </IonInput>
-              <IonIcon className="icon" icon={logoGoogle}></IonIcon>
               {phoneConfirmation && (
                 <>
                   <IonInput
