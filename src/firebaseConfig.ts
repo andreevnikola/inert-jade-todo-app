@@ -24,8 +24,8 @@ const app = initializeApp(firebaseConfig);
 export async function loginViaGoogle() {
   try {
     const provider = new auth.GoogleAuthProvider();
-    return await auth.signInWithPopup(auth.getAuth(), provider);
-  } catch {
+    return await auth.signInWithRedirect(auth.getAuth(), provider);
+  } catch (error) {
     return undefined;
   }
 }
@@ -33,9 +33,32 @@ export async function loginViaGoogle() {
 export async function loginViaFacebook() {
   try {
     const provider = new auth.FacebookAuthProvider();
-    return await auth.signInWithPopup(auth.getAuth(), provider);
+    return await auth.signInWithRedirect(auth.getAuth(), provider);
   } catch {
     return undefined;
+  }
+}
+
+export async function loginViaPhone(phoneNumber: string) {
+  try {
+    const recaptchaVerifier = new auth.RecaptchaVerifier(
+      auth.getAuth(),
+      "recaptcha-container"
+    );
+    return {
+      data: await auth.signInWithPhoneNumber(
+        auth.getAuth(),
+        phoneNumber,
+        recaptchaVerifier
+      ),
+      error: undefined,
+    };
+  } catch (error) {
+    console.error("ERROR: " + error);
+    return {
+      data: undefined,
+      error: error,
+    };
   }
 }
 
@@ -64,7 +87,26 @@ export async function loginViaApple() {
   // const provider = new auth.OAuthProvider("apple.com");
   // provider.addScope("email");
   // provider.addScope("name");
-  // return auth.signInWithPopup(auth.getAuth(), provider);
+  // return auth.signInWithRedirect(auth.getAuth(), provider);
+}
+
+export async function validatePhoneNumber(
+  phoneConfirmation: auth.ConfirmationResult | undefined,
+  verificationCode: string
+) {
+  try {
+    const ret = await phoneConfirmation?.confirm(verificationCode);
+    return {
+      data: ret,
+      error: undefined,
+    };
+  } catch (error) {
+    console.log("ERROR: " + error);
+    return {
+      data: undefined,
+      error: error,
+    };
+  }
 }
 
 const analytics = getAnalytics(app);

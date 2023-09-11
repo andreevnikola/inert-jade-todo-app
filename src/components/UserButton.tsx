@@ -8,7 +8,9 @@ export const UserButton = () => {
   return (
     <IonButton shape="round" routerLink="/profile">
       <IonChip>
-        <IonLabel>{user?.displayName || "Local user"}</IonLabel>
+        <IonLabel>
+          {user?.displayName || user?.phoneNumber || "Local user"}
+        </IonLabel>
         <IonAvatar style={{ height: "30px", width: "30px" }}>
           <img
             src={

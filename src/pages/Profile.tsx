@@ -39,7 +39,7 @@ export const ProfileComponent = () => {
               textAlign: "left",
             }}
           >
-            {user?.displayName?.split(" ")[0] || "Local User"}'s profile
+            Profile
           </IonTitle>
           <IonButtons slot="end">
             <UserButton />

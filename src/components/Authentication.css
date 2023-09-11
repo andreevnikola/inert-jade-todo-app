@@ -15,12 +15,37 @@
     margin: 15px;
 }
 
+.with-provider{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    background-color: var(--ion-color-light-tint);
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.with-provider>p{
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: bolder;
+    margin-bottom: 5px;
+    margin-top: 4px;
+}
+
 .auth-container>h3{
     color: var(--ion-color-dark);
     font-size: 2rem;
     font-weight: bolder;
     text-align: center;
 }
+
+/* .auth-container #recaptcha-container{
+    background-color: var(--ion-color-dark);
+    height: 150px;
+    width: 100%;
+} */
 
 .auth-container>.providers{
     width: 100%;
@@ -29,13 +54,13 @@
     flex-direction: column;
 }
 
-.auth-container>.providers>.btn{
+.auth-container>.providers .btn{
     width: 100%;
     font-weight: bold;
     position: relative;
 }
 
-.auth-container>.providers>.btn>.icon{
+.auth-container>.providers .btn>.icon{
     position: absolute;
     left: -5px;
 }

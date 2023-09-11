@@ -1,12 +1,13 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'InertJadeTodoApp',
-  webDir: 'dist',
+  appId: "io.ionic.starter",
+  appName: "InertJadeTodoApp",
+  webDir: "dist",
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: "https",
+    allowNavigation: ["*"],
+  },
 };
 
 export default config;
