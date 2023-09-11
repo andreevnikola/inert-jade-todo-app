@@ -1,4 +1,11 @@
-import { IonAvatar, IonButton, IonChip, IonIcon, IonLabel } from "@ionic/react";
+import {
+  IonAvatar,
+  IonButton,
+  IonChip,
+  IonIcon,
+  IonImg,
+  IonLabel,
+} from "@ionic/react";
 import { useContext, useState } from "react";
 import { AuthContext } from "./Authentication";
 import { getAuth } from "firebase/auth";
@@ -13,7 +20,7 @@ export const UserButton = () => {
           {user?.displayName || user?.phoneNumber || "Local user"}
         </IonLabel>
         <IonAvatar style={{ height: "30px", width: "30px" }}>
-          <img
+          <IonImg
             src={getAuth().currentUser?.photoURL || defaultProfilePicture}
             style={{ height: "30px", width: "30px" }}
           />
