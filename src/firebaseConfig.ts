@@ -24,7 +24,7 @@ const app = initializeApp(firebaseConfig);
 export async function loginViaGoogle() {
   try {
     const provider = new auth.GoogleAuthProvider();
-    return await auth.signInWithRedirect(auth.getAuth(), provider);
+    return await auth.signInWithPopup(auth.getAuth(), provider);
   } catch (error) {
     return undefined;
   }
@@ -33,7 +33,7 @@ export async function loginViaGoogle() {
 export async function loginViaFacebook() {
   try {
     const provider = new auth.FacebookAuthProvider();
-    return await auth.signInWithRedirect(auth.getAuth(), provider);
+    return await auth.signInWithPopup(auth.getAuth(), provider);
   } catch {
     return undefined;
   }

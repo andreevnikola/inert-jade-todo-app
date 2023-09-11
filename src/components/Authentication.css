@@ -17,6 +17,8 @@
 .auth-holder>.background-image{
     width: 100%;
     height: calc(100% - 350px);
+    position: absolute;
+    object-fit: fill;
 }
 
 .with-provider{

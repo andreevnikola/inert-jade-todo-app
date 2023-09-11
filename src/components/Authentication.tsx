@@ -12,6 +12,7 @@ import {
   IonButton,
   IonContent,
   IonIcon,
+  IonImg,
   IonInput,
   IonText,
 } from "@ionic/react";
@@ -23,6 +24,8 @@ import {
   validatePhoneNumber,
 } from "../firebaseConfig";
 import { Device } from "@capacitor/device";
+import { logoGoogle } from "ionicons/icons";
+import tasksImage from "/images/tasks.png";
 
 export const AuthContext = createContext<undefined | auth.User>(undefined);
 
@@ -73,11 +76,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     <AuthContext.Provider value={user}>
       {!user && userDataLoaded ? (
         <IonContent fullscreen className="auth-holder">
-          <img
-            className="background-image"
-            src="resources/tasks.png"
-            alt="ToDoApp"
-          />
+          <IonImg className="background-image" src={tasksImage} alt="ToDoApp" />
           <main className="auth-container">
             <h3>Sign In</h3>
             <div id="recaptcha-container"></div>
@@ -99,6 +98,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
               >
                 <div slot="label">Phone number</div>
               </IonInput>
+              <IonIcon className="icon" icon={logoGoogle}></IonIcon>
               {phoneConfirmation && (
                 <>
                   <IonInput
