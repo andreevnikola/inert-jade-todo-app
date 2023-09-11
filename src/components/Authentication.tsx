@@ -9,7 +9,11 @@ import * as auth from "firebase/auth";
 import "../firebaseConfig";
 import "./Authentication.css";
 import { IonButton, IonIcon } from "@ionic/react";
-import { loginViaApple, loginViaGoogle } from "../firebaseConfig";
+import {
+  loginViaApple,
+  loginViaFacebook,
+  loginViaGoogle,
+} from "../firebaseConfig";
 import { Device } from "@capacitor/device";
 
 export const AuthContext = createContext<undefined | auth.User>(undefined);
@@ -50,9 +54,17 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
         <main className="auth-container">
           <h3>Sign In</h3>
           <div className="providers">
-            <IonButton className="btn" onClick={loginViaGoogle}>
+            <IonButton className="btn" onClick={loginViaGoogle} color="danger">
               <IonIcon className="icon" name="logo-google"></IonIcon>
               Google
+            </IonButton>
+            <IonButton
+              className="btn"
+              color="secondary"
+              onClick={loginViaFacebook}
+            >
+              <IonIcon className="icon" name="logo-facebook"></IonIcon>
+              Facebook
             </IonButton>
             {showAppleSignIn && (
               <IonButton className="btn" onClick={loginViaApple} color={"dark"}>
