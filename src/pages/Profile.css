@@ -1,0 +1,17 @@
+.user-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 3px;
+}
+
+.user-info>span{
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-actions-icon{
+  position: absolute;
+  left: 0;
+}

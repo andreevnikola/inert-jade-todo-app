@@ -1,4 +1,10 @@
-import { PropsWithChildren, createContext, useState, useEffect } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
 import * as auth from "firebase/auth";
 import "../firebaseConfig";
 import "./Authentication.css";
@@ -6,10 +12,7 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { loginViaApple, loginViaGoogle } from "../firebaseConfig";
 import { Device } from "@capacitor/device";
 
-export const AuthContext = createContext<{
-  user: undefined | auth.User;
-  setter: (newState: auth.User | undefined) => void;
-}>({ user: undefined, setter: () => {} });
+export const AuthContext = createContext<undefined | auth.User>(undefined);
 
 export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
   children,
@@ -19,6 +22,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
   );
   const [userDataLoaded, setUserDataLoaded] = useState<boolean>(false);
 
+  const context = useContext(AuthContext);
   const setter = (newState: auth.User | undefined) => {
     setUser(newState);
     setUserDataLoaded(true);
@@ -40,9 +44,9 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     };
   }, []);
 
-  if (!user && userDataLoaded)
-    return (
-      <AuthContext.Provider value={{ user: user, setter: setter }}>
+  return (
+    <AuthContext.Provider value={user}>
+      {!user && userDataLoaded ? (
         <main className="auth-container">
           <h3>Sign In</h3>
           <div className="providers">
@@ -58,7 +62,9 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
             )}
           </div>
         </main>
-      </AuthContext.Provider>
-    );
-  return children;
+      ) : (
+        children
+      )}
+    </AuthContext.Provider>
+  );
 };

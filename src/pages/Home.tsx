@@ -2,6 +2,7 @@ import MessageListItem from "../components/MessageListItem";
 import { useState } from "react";
 import { Message, getMessages } from "../data/messages";
 import {
+  IonButtons,
   IonContent,
   IonHeader,
   IonList,
@@ -13,6 +14,7 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import "./Home.css";
+import { UserButton } from "../components/UserButton";
 
 const Home: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -30,21 +32,26 @@ const Home: React.FC = () => {
 
   return (
     <IonPage id="home-page">
-      <IonHeader>
+      <IonHeader collapse="fade">
         <IonToolbar>
-          <IonTitle>Inbox</IonTitle>
+          <IonTitle
+            style={{
+              textAlign: "left",
+              width: "100%",
+              paddingLeft: "30px",
+            }}
+          >
+            To Do 's
+          </IonTitle>
+          <IonButtons slot="end">
+            <UserButton />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonRefresher slot="fixed" onIonRefresh={refresh}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
-
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Inbox</IonTitle>
-          </IonToolbar>
-        </IonHeader>
 
         <IonList>
           {messages.map((m) => (
