@@ -1,18 +1,22 @@
 .auth-container{
-    width: calc(100% - 30px);
-    max-width: 450px;
+    width: 100%;
     padding: 18px;
     border-radius: 20px;
     border: 2px solid var(--ion-color-light-tint);
     background-color: var(--ion-color-light);
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(calc(-50% - 15px), -50%);
+    bottom: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin: 15px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    box-shadow: 0 -5px 100px var(--ion-color-light-tint);
+}
+
+.auth-holder>.background-image{
+    width: 100%;
+    height: calc(100% - 350px);
 }
 
 .with-provider{

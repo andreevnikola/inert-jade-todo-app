@@ -72,7 +72,12 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
   return (
     <AuthContext.Provider value={user}>
       {!user && userDataLoaded ? (
-        <IonContent fullscreen>
+        <IonContent fullscreen className="auth-holder">
+          <img
+            className="background-image"
+            src="resources/tasks.png"
+            alt="ToDoApp"
+          />
           <main className="auth-container">
             <h3>Sign In</h3>
             <div id="recaptcha-container"></div>
