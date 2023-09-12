@@ -67,7 +67,7 @@ ion-item ion-note.md {
 }
 
 .dot-important {
-  background: var(--ion-color-danger);
+  background: var(--ion-color-warning);
 }
 
 ion-footer ion-title {
@@ -78,4 +78,8 @@ ion-footer ion-title {
 .is-done-holder{
   margin-right: 5px;
   padding: 0px !important;
+}
+
+.action-icon{
+  font-size: 25px;
 }

@@ -59,3 +59,15 @@ export const setIsTaskDone = (id: string, isDone: boolean) => {
   }
   return !isDone;
 };
+
+export const setIsTaskImportant = (id: string, isImportant: boolean) => {
+  if (tasks.find((task) => task.id === id)) {
+    tasks.find((task) => task.id === id)!.important = isImportant;
+    return isImportant;
+  }
+  return !isImportant;
+};
+
+export const deleteTask = (id: string) => {
+  tasks = tasks.filter((task) => task.id !== id);
+};

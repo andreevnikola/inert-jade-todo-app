@@ -31,7 +31,8 @@ const Todos: React.FC = () => {
     const tasks = getTasks();
     setTasks(tasks);
     event.detail.complete();
-    setExpandedTask(tasks[0].id);
+    setExpandedTask(tasks[0]?.id);
+    setExpandedTask(tasks[1]?.id);
   };
 
   return (
