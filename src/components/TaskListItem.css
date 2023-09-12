@@ -16,8 +16,15 @@ ion-item h2 {
 ion-item p {
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;
   width: 95%;
+}
+
+.expanded {
+  white-space: inherit;
+}
+
+.collapsed {
+  white-space: nowrap;
 }
 
 ion-item .date {
@@ -42,15 +49,25 @@ ion-item ion-note.md {
 
 .dot {
   display: block;
-  height: 12px;
-  width: 12px;
+  height: 19px;
+  width: 19px;
   border-radius: 50%;
   align-self: start;
   margin: 16px 10px 16px 16px;
+  font-size: 11px;
+  text-align: center;
 }
 
-.dot-unread {
+.dot-notdone {
   background: var(--ion-color-primary);
+}
+
+.dot-done {
+  background: var(--ion-color-success);
+}
+
+.dot-important {
+  background: var(--ion-color-danger);
 }
 
 ion-footer ion-title {
