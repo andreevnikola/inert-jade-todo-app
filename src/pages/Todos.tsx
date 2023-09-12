@@ -7,22 +7,32 @@ import {
   IonHeader,
   IonList,
   IonPage,
+  IonRefresher,
+  IonRefresherContent,
   IonTitle,
   IonToolbar,
+  RefresherEventDetail,
   useIonViewWillEnter,
 } from "@ionic/react";
 import "./Todos.css";
 import { UserButton } from "../components/UserButton";
 
 const Todos: React.FC = () => {
-  const [tasks, setMessages] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   useIonViewWillEnter(() => {
     const tasks = getTasks();
-    setMessages(tasks);
+    setTasks(tasks);
   });
 
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
+
+  const refreshTasks = (event: CustomEvent<RefresherEventDetail>) => {
+    const tasks = getTasks();
+    setTasks(tasks);
+    event.detail.complete();
+    setExpandedTask(tasks[0].id);
+  };
 
   return (
     <IonPage id="home-page">
@@ -48,13 +58,18 @@ const Todos: React.FC = () => {
             <IonTitle size="large">Todo 's</IonTitle>
           </IonToolbar>
         </IonHeader>
-        {/* <IonRefresher slot="fixed" onIonRefresh={refresh}>
+        <IonRefresher slot="fixed" onIonRefresh={refreshTasks}>
           <IonRefresherContent></IonRefresherContent>
-        </IonRefresher> */}
+        </IonRefresher>
 
         <IonList>
           {tasks.map((task) => (
-            <div key={task.id} onClick={() => setExpandedTask(task.id)}>
+            <div
+              key={task.id}
+              onClick={() =>
+                setExpandedTask(expandedTask === task.id ? null : task.id)
+              }
+            >
               <TaskListItem isSelected={expandedTask === task.id} task={task} />
             </div>
           ))}

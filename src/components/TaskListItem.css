@@ -74,3 +74,8 @@ ion-footer ion-title {
   font-size: 11px;
   font-weight: normal;
 }
+
+.is-done-holder{
+  margin-right: 5px;
+  padding: 0px !important;
+}

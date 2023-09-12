@@ -7,7 +7,7 @@ export interface Task {
   emoji: string;
 }
 
-const tasks: Task[] = [
+let tasks: Task[] = [
   {
     title: "Feed the dog",
     description: "The dog is hungry! Buy food for him and feed it!",
@@ -51,3 +51,11 @@ export const getTasks = () =>
     .sort((a, b) => (!a.done ? -1 : 1));
 
 export const getTask = (id: string) => tasks.find((task) => task.id === id);
+
+export const setIsTaskDone = (id: string, isDone: boolean) => {
+  if (tasks.find((task) => task.id === id)) {
+    tasks.find((task) => task.id === id)!.done = isDone;
+    return isDone;
+  }
+  return !isDone;
+};
