@@ -21,6 +21,7 @@ export const UserButton = () => {
         </IonLabel>
         <IonAvatar style={{ height: "30px", width: "30px" }}>
           <IonImg
+            referrerPolicy="no-referrer"
             src={getAuth().currentUser?.photoURL || defaultProfilePicture}
             style={{ height: "30px", width: "30px" }}
           />
