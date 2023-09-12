@@ -24,7 +24,13 @@ import {
   validatePhoneNumber,
 } from "../firebaseConfig";
 import { Device } from "@capacitor/device";
-import { logoGoogle } from "ionicons/icons";
+import {
+  callOutline,
+  checkboxOutline,
+  logoApple,
+  logoFacebook,
+  logoGoogle,
+} from "ionicons/icons";
 import tasksImage from "/images/tasks.png";
 
 export const AuthContext = createContext<undefined | auth.User>(undefined);
@@ -124,7 +130,11 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                   onClick={loginWithPhoneAndStartValidation}
                   color="primary"
                 >
-                  <IonIcon className="icon" name="call-outline"></IonIcon>
+                  <IonIcon
+                    slot="start"
+                    className="icon"
+                    icon={callOutline}
+                  ></IonIcon>
                   Continue with phone
                 </IonButton>
               ) : (
@@ -139,7 +149,11 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                   }}
                   color="primary"
                 >
-                  <IonIcon className="icon" name="checkbox-outline"></IonIcon>
+                  <IonIcon
+                    slot="start"
+                    className="icon"
+                    icon={checkboxOutline}
+                  ></IonIcon>
                   Validate phone
                 </IonButton>
               )}
@@ -150,7 +164,11 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                   onClick={loginViaGoogle}
                   color="danger"
                 >
-                  <IonIcon className="icon" name="logo-google"></IonIcon>
+                  <IonIcon
+                    className="icon"
+                    slot="start"
+                    icon={logoGoogle}
+                  ></IonIcon>
                   Google
                 </IonButton>
                 <IonButton
@@ -158,7 +176,11 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                   color="secondary"
                   onClick={loginViaFacebook}
                 >
-                  <IonIcon className="icon" name="logo-facebook"></IonIcon>
+                  <IonIcon
+                    slot="start"
+                    className="icon"
+                    icon={logoFacebook}
+                  ></IonIcon>
                   Facebook
                 </IonButton>
                 {showAppleSignIn && (
@@ -167,7 +189,11 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                     onClick={loginViaApple}
                     color={"dark"}
                   >
-                    <IonIcon className="icon" name="logo-apple"></IonIcon>
+                    <IonIcon
+                      slot="start"
+                      className="icon"
+                      icon={logoApple}
+                    ></IonIcon>
                     Apple
                   </IonButton>
                 )}

@@ -1,7 +1,7 @@
 import { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId: "io.ionic.starter",
+  appId: "com.inertjade.todoapp",
   appName: "InertJadeTodoApp",
   webDir: "dist",
   server: {
