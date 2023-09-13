@@ -1,5 +1,5 @@
 import TaskListItem from "../components/TaskListItem";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Task, getTasks } from "../data/tasks";
 import {
   IonButtons,
@@ -16,23 +16,25 @@ import {
 } from "@ionic/react";
 import "./Todos.css";
 import { UserButton } from "../components/UserButton";
+import AddTask from "../components/AddTask";
 
 const Todos: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  useIonViewWillEnter(() => {
+  const refetch = useCallback(() => {
     const tasks = getTasks();
     setTasks(tasks);
-  });
+    setExpandedTask(tasks[0]?.id!);
+    setExpandedTask(tasks[1]?.id!);
+  }, []);
+
+  useIonViewWillEnter(refetch);
 
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
 
   const refreshTasks = (event: CustomEvent<RefresherEventDetail>) => {
-    const tasks = getTasks();
-    setTasks(tasks);
+    refetch();
     event.detail.complete();
-    setExpandedTask(tasks[0]?.id);
-    setExpandedTask(tasks[1]?.id);
   };
 
   return (
@@ -68,13 +70,14 @@ const Todos: React.FC = () => {
             <div
               key={task.id}
               onClick={() =>
-                setExpandedTask(expandedTask === task.id ? null : task.id)
+                setExpandedTask(expandedTask === task.id ? null : task.id!)
               }
             >
               <TaskListItem isSelected={expandedTask === task.id} task={task} />
             </div>
           ))}
         </IonList>
+        <AddTask refetch={refetch} />
       </IonContent>
     </IonPage>
   );

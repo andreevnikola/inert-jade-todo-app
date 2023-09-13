@@ -1,0 +1,9 @@
+.modal .cluster {
+  display: flex;
+  gap: 20px;
+}
+
+.modal .cluster ion-input:nth-child(1){
+  width: 1.9rem;
+  text-align: center;
+}

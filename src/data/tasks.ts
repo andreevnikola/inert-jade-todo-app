@@ -1,9 +1,9 @@
 export interface Task {
   title: string;
   description: string;
-  done: boolean;
+  done?: boolean;
   important: boolean;
-  id: string;
+  id?: string;
   emoji: string;
 }
 
@@ -71,3 +71,11 @@ export const setIsTaskImportant = (id: string, isImportant: boolean) => {
 export const deleteTask = (id: string) => {
   tasks = tasks.filter((task) => task.id !== id);
 };
+
+export function addTask(addTask: Task) {
+  tasks.push({
+    ...addTask,
+    done: false,
+    id: Math.floor(Math.random() * (1999 - 1000) + 1000).toString(),
+  });
+}
