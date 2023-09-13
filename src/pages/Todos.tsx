@@ -1,11 +1,13 @@
 import TaskListItem from "../components/TaskListItem";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Task, getTasks } from "../data/tasks";
 import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonImg,
   IonList,
+  IonLoading,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -17,23 +19,36 @@ import {
 import "./Todos.css";
 import { UserButton } from "../components/UserButton";
 import AddTask from "../components/AddTask";
+import { ErrorsContext } from "../components/ErrorsHandlingProvider";
+
+import AllTasksDone from "/images/all-work-done.png";
+
+// !INFO - LOADING from the apollo client ain't working! So I must do this in an inconvinient way!
 
 const Todos: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { errorSetter } = useContext(ErrorsContext);
+  const { tasks, error, refetch } = getTasks();
 
-  const refetch = useCallback(() => {
-    const tasks = getTasks();
-    setTasks(tasks);
-    setExpandedTask(tasks[0]?.id!);
-    setExpandedTask(tasks[1]?.id!);
+  const hydrate = useCallback(() => {
+    if (error) {
+      errorSetter({
+        error: error.message,
+      });
+      return;
+    }
+
+    if (!tasks || tasks.length < 1) return;
+    setExpandedTask(tasks![0]?._id!);
+    setExpandedTask(tasks![1]?._id!);
   }, []);
 
-  useIonViewWillEnter(refetch);
+  useIonViewWillEnter(hydrate);
 
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
 
-  const refreshTasks = (event: CustomEvent<RefresherEventDetail>) => {
-    refetch();
+  const refreshTasks = async (event: CustomEvent<RefresherEventDetail>) => {
+    await refetch();
+    hydrate();
     event.detail.complete();
   };
 
@@ -64,19 +79,31 @@ const Todos: React.FC = () => {
         <IonRefresher slot="fixed" onIonRefresh={refreshTasks}>
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
-
-        <IonList>
-          {tasks.map((task) => (
-            <div
-              key={task.id}
-              onClick={() =>
-                setExpandedTask(expandedTask === task.id ? null : task.id!)
-              }
-            >
-              <TaskListItem isSelected={expandedTask === task.id} task={task} />
-            </div>
-          ))}
-        </IonList>
+        <IonLoading isOpen={!tasks} message="Loading..." spinner="circles" />
+        {!tasks ? (
+          <></>
+        ) : tasks.length < 1 ? (
+          <div className="tasks-done">
+            <IonImg src={AllTasksDone} />
+            <h1>No tasks left! Good job!</h1>
+          </div>
+        ) : (
+          <IonList>
+            {tasks!.map((task) => (
+              <div
+                key={task._id}
+                onClick={() =>
+                  setExpandedTask(expandedTask === task._id ? null : task._id!)
+                }
+              >
+                <TaskListItem
+                  isSelected={expandedTask === task._id}
+                  task={task}
+                />
+              </div>
+            ))}
+          </IonList>
+        )}
         <AddTask refetch={refetch} />
       </IonContent>
     </IonPage>

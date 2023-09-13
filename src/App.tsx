@@ -23,26 +23,35 @@ import "./theme/variables.css";
 import { Authentication } from "./components/Authentication";
 import { ProfileComponent } from "./pages/Profile";
 import Todos from "./pages/Todos";
+import { RealmAppProvider } from "./components/Realm";
+import RealmApolloProvider from "./data/RealmApolloProvider";
+import ErrorsHandlingProvider from "./components/ErrorsHandlingProvider";
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <Authentication>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route path="/" exact={true}>
-            <Redirect to="/todos" />
-          </Route>
-          <Route path="/todos" exact={true}>
-            <Todos />
-          </Route>
-          <Route path="/profile">
-            <ProfileComponent />
-          </Route>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </Authentication>
+    <ErrorsHandlingProvider>
+      <RealmAppProvider appId="inertjadetodoapp-oplmb">
+        <RealmApolloProvider>
+          <Authentication>
+            <IonReactRouter>
+              <IonRouterOutlet>
+                <Route path="/" exact={true}>
+                  <Redirect to="/todos" />
+                </Route>
+                <Route path="/todos" exact={true}>
+                  <Todos />
+                </Route>
+                <Route path="/profile">
+                  <ProfileComponent />
+                </Route>
+              </IonRouterOutlet>
+            </IonReactRouter>
+          </Authentication>
+        </RealmApolloProvider>
+      </RealmAppProvider>
+    </ErrorsHandlingProvider>
   </IonApp>
 );
 

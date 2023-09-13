@@ -11,18 +11,18 @@ import {
 import {
   Task,
   deleteTask,
-  getTask,
-  getTasks,
-  setIsTaskDone,
+  isTaskDoneMutation,
   setIsTaskImportant,
 } from "../data/tasks";
 import "./TaskListItem.css";
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   alertCircleOutline,
   arrowDownCircleOutline,
   trash,
 } from "ionicons/icons";
+import { useMutation } from "@apollo/client";
+import { ErrorsContext } from "./ErrorsHandlingProvider";
 
 interface MessageListItemProps {
   task: Task;
@@ -34,33 +34,47 @@ const MessageListItem: React.FC<MessageListItemProps> = ({
   isSelected,
 }) => {
   const [taskState, setTaskState] = useState<Task | null>(task);
+  const { errorSetter } = useContext(ErrorsContext);
   const slideItemRef = useRef<HTMLIonItemSlidingElement>(null);
 
-  // console.log("===================");
-  // const tasks = getTasks();
-  // tasks.forEach((task) => {
-  //   console.log(task.title + ": " + task.important);
-  // });
+  const [setIsTaskDone, { error: setIsTaskDoneError }] = useMutation<{
+    todos: Task[];
+  }>(isTaskDoneMutation, {
+    variables: { id: taskState!._id, done: !taskState!.done },
+  });
 
   const changeIsTaskDone = (isDone: boolean) => {
-    const changed = setIsTaskDone(taskState!.id, isDone);
+    setIsTaskDone();
     setTaskState({
       ...taskState,
-      done: changed,
+      done: isDone,
     } as any);
   };
   const deleteAndHideTask = () => {
-    deleteTask(taskState!.id);
+    deleteTask(taskState!._id!!);
     setTaskState(null);
   };
   const makeTaskImportantAndUpdate = () => {
     slideItemRef.current!.close();
-    const changed = setIsTaskImportant(taskState!.id, !taskState!.important);
+    const changed = setIsTaskImportant(taskState!._id!, !taskState!.important);
     setTaskState({
       ...taskState,
       important: changed,
     } as any);
   };
+
+  useEffect(() => {
+    if (setIsTaskDoneError) {
+      errorSetter({
+        error: setIsTaskDoneError.message,
+      });
+      setTaskState({
+        ...taskState,
+        done: !taskState!.done,
+      } as Task);
+    }
+  }, [setIsTaskDoneError]);
+
   if (!taskState) return <></>;
   return (
     <IonItemSliding ref={slideItemRef}>
