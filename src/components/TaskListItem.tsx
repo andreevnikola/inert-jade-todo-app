@@ -6,13 +6,12 @@ import {
   IonItemOptions,
   IonItemSliding,
   IonLabel,
-  IonNote,
 } from "@ionic/react";
 import {
   Task,
-  deleteTask,
+  deleteTaskMutation,
   isTaskDoneMutation,
-  setIsTaskImportant,
+  isTaskImportantMutation,
 } from "../data/tasks";
 import "./TaskListItem.css";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -43,6 +42,18 @@ const MessageListItem: React.FC<MessageListItemProps> = ({
     variables: { id: taskState!._id, done: !taskState!.done },
   });
 
+  const [deleteTask, { error: deleteTaskError }] = useMutation<{
+    todos: Task[];
+  }>(deleteTaskMutation, {
+    variables: { id: taskState!._id! },
+  });
+
+  const [setIsTaskImportant, { error: setIsTaskImportantError }] = useMutation<{
+    todos: Task[];
+  }>(isTaskImportantMutation, {
+    variables: { id: taskState!._id!, important: !taskState!.important },
+  });
+
   const changeIsTaskDone = (isDone: boolean) => {
     setIsTaskDone();
     setTaskState({
@@ -51,16 +62,19 @@ const MessageListItem: React.FC<MessageListItemProps> = ({
     } as any);
   };
   const deleteAndHideTask = () => {
-    deleteTask(taskState!._id!!);
-    setTaskState(null);
+    deleteTask();
+    setTaskState({
+      ...taskState,
+      deleted: true,
+    } as any);
   };
   const makeTaskImportantAndUpdate = () => {
     slideItemRef.current!.close();
-    const changed = setIsTaskImportant(taskState!._id!, !taskState!.important);
+    setIsTaskImportant();
     setTaskState({
       ...taskState,
-      important: changed,
-    } as any);
+      important: !taskState!.important,
+    } as Task);
   };
 
   useEffect(() => {
@@ -73,9 +87,29 @@ const MessageListItem: React.FC<MessageListItemProps> = ({
         done: !taskState!.done,
       } as Task);
     }
+
+    if (deleteTaskError) {
+      errorSetter({
+        error: deleteTaskError.message,
+      });
+      setTaskState({
+        ...taskState,
+        deleted: false,
+      } as Task);
+    }
+
+    if (setIsTaskImportantError) {
+      errorSetter({
+        error: setIsTaskImportantError.message,
+      });
+      setTaskState({
+        ...taskState,
+        important: !taskState!.important,
+      } as Task);
+    }
   }, [setIsTaskDoneError]);
 
-  if (!taskState) return <></>;
+  if (taskState?.deleted || !taskState) return <></>;
   return (
     <IonItemSliding ref={slideItemRef}>
       <IonItem detail={false}>

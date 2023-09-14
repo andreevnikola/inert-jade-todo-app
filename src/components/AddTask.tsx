@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   IonButton,
   IonButtons,
@@ -10,6 +10,7 @@ import {
   IonIcon,
   IonInput,
   IonItem,
+  IonLoading,
   IonPage,
   IonTextarea,
   IonTitle,
@@ -19,7 +20,9 @@ import {
 import { add } from "ionicons/icons";
 import { OverlayEventDetail } from "@ionic/core";
 import "./AddTask.css";
-import { Task, addTask } from "../data/tasks";
+import { Task, addTask, createNewTodoMutation } from "../data/tasks";
+import { useMutation } from "@apollo/client";
+import { useRealmApp } from "./Realm";
 
 const AddToDoModal = ({
   onDismiss,
@@ -127,19 +130,49 @@ export default function AddTask({
   const [present, dismiss] = useIonModal(AddToDoModal, {
     onDismiss: (data: string, role: string) => dismiss(data, role),
   });
+  const [task, setTask] = useState<Task | "loading">();
   function openModal() {
     present({
       onWillDismiss: (ev: CustomEvent<OverlayEventDetail>) => {
         if (ev.detail.role === "add") {
-          addTask(ev.detail.data);
-          refetch();
+          setTask(ev.detail.data as Task);
         }
       },
     });
   }
 
+  const realmApp = useRealmApp();
+
+  let [setIsTaskImportant, { error: setIsTaskImportantError, data }] =
+    useMutation<{
+      todos: Task[];
+    }>(createNewTodoMutation, {
+      variables: {
+        ...(task as Task),
+        user_id: realmApp.currentUser?.id,
+        done: false,
+      },
+    });
+
+  if (data && task === "loading") {
+    refetch();
+    setTask(undefined);
+  }
+
+  useEffect(() => {
+    if (task && task !== "loading") {
+      setIsTaskImportant();
+      setTask("loading");
+    }
+  }, [task]);
+
   return (
     <>
+      <IonLoading
+        isOpen={task === "loading"}
+        message="Creating new task..."
+        spinner="circles"
+      />
       <IonFab slot="fixed" horizontal="end" vertical="bottom">
         <IonFabButton onClick={() => openModal()}>
           <IonIcon icon={add}></IonIcon>
