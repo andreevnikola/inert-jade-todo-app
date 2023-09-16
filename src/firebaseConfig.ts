@@ -8,6 +8,8 @@ import {
   SignInWithAppleResponse,
   SignInWithAppleOptions,
 } from "@capacitor-community/apple-sign-in";
+import { Device } from "@capacitor/device";
+import { GooglePlus } from "@ionic-native/google-plus";
 
 const firebaseConfig = {
   apiKey: env.FIREBASE_API_KEY,
@@ -21,13 +23,36 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export async function loginViaGoogle() {
+async function nativeGoogleLogin() {
+  try {
+    const gplusUser = await GooglePlus.login({
+      webClientId: env.GOOGLE_AUTH_WEB_CLIENT_ID,
+      offline: true,
+      scopes: "profile email",
+    });
+    return await auth.signInWithCredential(
+      auth.getAuth(),
+      auth.GoogleAuthProvider.credential(gplusUser.idToken)
+    );
+  } catch (error) {
+    return undefined;
+  }
+}
+
+export async function webGoogleLogin() {
   try {
     const provider = new auth.GoogleAuthProvider();
     return await auth.signInWithPopup(auth.getAuth(), provider);
   } catch (error) {
     return undefined;
   }
+}
+
+export async function loginViaGoogle() {
+  if ((await Device.getInfo()).platform !== "web") {
+    return nativeGoogleLogin();
+  }
+  return webGoogleLogin();
 }
 
 export async function loginViaFacebook() {
@@ -106,6 +131,13 @@ export async function validatePhoneNumber(
       data: undefined,
       error: error,
     };
+  }
+}
+
+export async function signOut() {
+  auth.getAuth().signOut();
+  if ((await Device.getInfo()).platform !== "web") {
+    GooglePlus.logout();
   }
 }
 

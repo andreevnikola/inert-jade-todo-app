@@ -20,7 +20,7 @@ export const UserButton = () => {
           {user?.displayName || user?.phoneNumber || "Local user"}
         </IonLabel>
         <IonAvatar style={{ height: "30px", width: "30px" }}>
-          <IonImg
+          <img
             referrerPolicy="no-referrer"
             src={getAuth().currentUser?.photoURL || defaultProfilePicture}
             style={{ height: "30px", width: "30px" }}
