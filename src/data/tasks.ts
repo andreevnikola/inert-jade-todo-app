@@ -11,20 +11,26 @@ export interface Task {
   deleted?: boolean;
 }
 
-export const getTasks = () => {
+export const getTasks = (user_id: string) => {
   const { data, error, refetch } = useQuery<{ todos: Task[] }>(
     gql`
-      query {
-        todos {
+      query GetAllUserTodos($user_id: String!) {
+        todos(query: { user_id: $user_id }) {
           _id
           description
           done
           emoji
           important
           title
+          user_id
         }
       }
-    `
+    `,
+    {
+      variables: {
+        user_id,
+      },
+    }
   );
   let tasks;
   if (data?.todos) {
@@ -83,6 +89,14 @@ export const createNewTodoMutation = gql`
       }
     ) {
       user_id
+    }
+  }
+`;
+
+export const deleteAllTodosForUser = gql`
+  mutation DeleteAllTodosForUser($user_id: String!) {
+    deleteManyTodos(query: { user_id: $user_id }) {
+      deletedCount
     }
   }
 `;

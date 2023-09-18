@@ -32,6 +32,8 @@ import {
   logoGoogle,
 } from "ionicons/icons";
 import tasksImage from "/images/tasks.png";
+import { useRealmApp } from "./Realm";
+import * as Realm from "realm-web";
 
 export const AuthContext = createContext<undefined | auth.User>(undefined);
 
@@ -43,10 +45,16 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
   );
   const [userDataLoaded, setUserDataLoaded] = useState<boolean>(false);
 
+  const realmApp = useRealmApp();
+
   const context = useContext(AuthContext);
-  const setter = (newState: auth.User | undefined) => {
+  const setter = async (newState: auth.User | undefined) => {
     setUser(newState);
     setUserDataLoaded(true);
+    if (newState) {
+      const credentials = Realm.Credentials.jwt(await newState?.getIdToken()!);
+      realmApp?.logIn!(credentials);
+    }
   };
 
   const [showAppleSignIn, setShowAppleSignIn] = useState(false);

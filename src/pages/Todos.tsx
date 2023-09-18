@@ -22,12 +22,14 @@ import AddTask from "../components/AddTask";
 import { ErrorsContext } from "../components/ErrorsHandlingProvider";
 
 import AllTasksDone from "/images/all-work-done.png";
+import { useRealmApp } from "../components/Realm";
 
 // !INFO - LOADING from the apollo client ain't working! So I must do this in an inconvinient way!
 
 const Todos: React.FC = () => {
   const { errorSetter } = useContext(ErrorsContext);
-  const { tasks, error, refetch } = getTasks();
+  const app = useRealmApp();
+  const { tasks, error, refetch } = getTasks(app.currentUser?.id || "dasd");
 
   const hydrate = useCallback(() => {
     if (error) {
