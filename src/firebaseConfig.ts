@@ -10,6 +10,7 @@ import {
 } from "@capacitor-community/apple-sign-in";
 import { Device } from "@capacitor/device";
 import { GooglePlus } from "@ionic-native/google-plus";
+import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 
 const firebaseConfig = {
   apiKey: env.FIREBASE_API_KEY,
@@ -23,18 +24,23 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-async function nativeGoogleLogin() {
-  try {
-    const gplusUser = await GooglePlus.login({
-      webClientId: env.GOOGLE_AUTH_WEB_CLIENT_ID,
-      offline: true,
-      scopes: "profile email",
-    });
-    const signed = await auth.signInWithCredential(
-      auth.getAuth(),
-      auth.GoogleAuthProvider.credential(gplusUser.idToken)
-    );
+GoogleAuth.initialize({
+  clientId: env.GOOGLE_AUTH_SERVER_CLIENT_ID,
+  scopes: ["profile", "email"],
+  grantOfflineAccess: true,
+});
 
+export async function loginViaGoogle() {
+  // if ((await Device.getInfo()).platform !== "web") {
+  //   return nativeGoogleLogin();
+  // }
+  // return nativeGoogleLogin();
+  try {
+    const googleUser = await GoogleAuth.signIn();
+    const credential = auth.GoogleAuthProvider.credential(
+      googleUser.authentication.idToken
+    );
+    const signed = auth.signInWithCredential(auth.getAuth(), credential);
     return {
       user: signed,
       error: undefined,
@@ -65,14 +71,13 @@ export async function webGoogleLogin() {
   }
 }
 
-export async function loginViaGoogle() {
-  console.log("SIGNGN IN ");
-  if ((await Device.getInfo()).platform !== "web") {
-    console.log("CALLING NATIVE");
-    return nativeGoogleLogin();
-  }
-  return webGoogleLogin();
-}
+// export async function loginViaGoogle() {
+//   // if ((await Device.getInfo()).platform !== "web") {
+//   //   return nativeGoogleLogin();
+//   // }
+//   // return nativeGoogleLogin();
+//   return nativeGoogleLogin();
+// }
 
 export async function loginViaFacebook() {
   try {

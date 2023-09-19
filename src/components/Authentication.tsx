@@ -36,6 +36,7 @@ import tasksImage from "/images/tasks.png";
 import { useRealmApp } from "./Realm";
 import * as Realm from "realm-web";
 import { ErrorsContext } from "./ErrorsHandlingProvider";
+import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 
 export const AuthContext = createContext<undefined | auth.User>(undefined);
 
@@ -80,8 +81,6 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     //@ts-ignore
     auth.onAuthStateChanged(auth.getAuth(), setter);
 
-    console.log("LOVING YO MAMA");
-
     const isOnAppleDevice = async () => {
       const device = await Device.getInfo();
       if (device.platform !== "android") {
@@ -93,6 +92,12 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     isOnAppleDevice();
   }, []);
 
+  const signInError = (error: string) =>
+    error.includes("auth/account-exists-with-different-credential")
+      ? "The E-Mail address or the Phone Number linked to this profile is already used in another profile!"
+      : // : JSON.stringify(error);
+        "We were not able to sign you in! Try again later!";
+
   const errorHandledLogin = async (
     loginFn: () => Promise<{
       user: auth.UserCredential | undefined;
@@ -100,17 +105,12 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     }>
   ) => {
     let { user, error } = await loginFn();
-    console.log("USER: " + user?.user.email);
     if (error) {
       errorSetter({
-        error: error.includes("auth/account-exists-with-different-credential")
-          ? "The E-Mail address or the Phone Number linked to this profile is already used in another profile!"
-          : "We were not able to sign you in! Try again later!",
+        error: signInError(error),
       });
     }
-    if ((await Device.getInfo()).platform !== "web") {
-      setter(user!.user);
-    }
+    setter(user?.user!);
   };
 
   return (
@@ -196,7 +196,11 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                 <p>Or continue with:</p>
                 <IonButton
                   className="btn"
-                  onClick={() => errorHandledLogin(loginViaGoogle)}
+                  onClick={() => errorHandledLogin(loginViaGoogle as any)}
+                  // onClick={async () => {
+                  //   let googleUser = await GoogleAuth.signIn();
+                  //   setUser(googleUser as any);
+                  // }}
                   color="danger"
                 >
                   <IonIcon

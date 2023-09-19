@@ -4,4 +4,5 @@
     <string name="title_activity_main">InertJadeTodoApp</string>
     <string name="package_name">com.inertjade.todoapp</string>
     <string name="custom_url_scheme">com.inertjade.todoapp</string>
+    <string name="server_client_id">575367381658-nnu1hdg7heb74qbfl1ql9oic7inanv7u.apps.googleusercontent.com</string>
 </resources>
