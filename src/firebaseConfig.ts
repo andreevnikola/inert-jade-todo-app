@@ -30,26 +30,45 @@ async function nativeGoogleLogin() {
       offline: true,
       scopes: "profile email",
     });
-    return await auth.signInWithCredential(
+    const signed = await auth.signInWithCredential(
       auth.getAuth(),
       auth.GoogleAuthProvider.credential(gplusUser.idToken)
     );
-  } catch (error) {
-    return undefined;
+
+    return {
+      user: signed,
+      error: undefined,
+    };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      user: undefined,
+      error: error.message,
+    };
   }
 }
 
 export async function webGoogleLogin() {
   try {
     const provider = new auth.GoogleAuthProvider();
-    return await auth.signInWithPopup(auth.getAuth(), provider);
-  } catch (error) {
-    return undefined;
+    const signed = await auth.signInWithPopup(auth.getAuth(), provider);
+    return {
+      user: signed,
+      error: undefined,
+    };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      user: undefined,
+      error: error.message,
+    };
   }
 }
 
 export async function loginViaGoogle() {
+  console.log("SIGNGN IN ");
   if ((await Device.getInfo()).platform !== "web") {
+    console.log("CALLING NATIVE");
     return nativeGoogleLogin();
   }
   return webGoogleLogin();
@@ -58,9 +77,17 @@ export async function loginViaGoogle() {
 export async function loginViaFacebook() {
   try {
     const provider = new auth.FacebookAuthProvider();
-    return await auth.signInWithPopup(auth.getAuth(), provider);
-  } catch {
-    return undefined;
+    const signed = await auth.signInWithPopup(auth.getAuth(), provider);
+    return {
+      user: signed,
+      error: undefined,
+    };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      user: undefined,
+      error: error.message,
+    };
   }
 }
 
@@ -104,9 +131,17 @@ export async function loginViaApple() {
     const credential = provider.credential({
       idToken: result.response.identityToken,
     });
-    return await auth.signInWithCredential(auth.getAuth(), credential);
-  } catch {
-    return undefined;
+    const signed = await auth.signInWithCredential(auth.getAuth(), credential);
+    return {
+      user: signed,
+      error: undefined,
+    };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      user: undefined,
+      error: error.message,
+    };
   }
 
   // const provider = new auth.OAuthProvider("apple.com");

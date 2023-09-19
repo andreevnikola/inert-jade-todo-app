@@ -27,6 +27,7 @@ import { Device } from "@capacitor/device";
 import {
   callOutline,
   checkboxOutline,
+  layersOutline,
   logoApple,
   logoFacebook,
   logoGoogle,
@@ -34,12 +35,15 @@ import {
 import tasksImage from "/images/tasks.png";
 import { useRealmApp } from "./Realm";
 import * as Realm from "realm-web";
+import { ErrorsContext } from "./ErrorsHandlingProvider";
 
 export const AuthContext = createContext<undefined | auth.User>(undefined);
 
 export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
   children,
 }) => {
+  const { errorSetter } = useContext(ErrorsContext);
+
   const [user, setUser] = useState<auth.User | undefined>(
     auth.getAuth().currentUser || undefined
   );
@@ -57,7 +61,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     }
   };
 
-  const [showAppleSignIn, setShowAppleSignIn] = useState(false);
+  const [showAppleSignIn, setShowAppleSignIn] = useState(true);
 
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -76,15 +80,38 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
     //@ts-ignore
     auth.onAuthStateChanged(auth.getAuth(), setter);
 
-    async () => {
+    console.log("LOVING YO MAMA");
+
+    const isOnAppleDevice = async () => {
       const device = await Device.getInfo();
-      if (device.platform === "ios") {
+      if (device.platform !== "android") {
         setShowAppleSignIn(true);
       } else {
         setShowAppleSignIn(false);
       }
     };
+    isOnAppleDevice();
   }, []);
+
+  const errorHandledLogin = async (
+    loginFn: () => Promise<{
+      user: auth.UserCredential | undefined;
+      error: string | undefined;
+    }>
+  ) => {
+    let { user, error } = await loginFn();
+    console.log("USER: " + user?.user.email);
+    if (error) {
+      errorSetter({
+        error: error.includes("auth/account-exists-with-different-credential")
+          ? "The E-Mail address or the Phone Number linked to this profile is already used in another profile!"
+          : "We were not able to sign you in! Try again later!",
+      });
+    }
+    if ((await Device.getInfo()).platform !== "web") {
+      setter(user!.user);
+    }
+  };
 
   return (
     <AuthContext.Provider value={user}>
@@ -169,7 +196,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                 <p>Or continue with:</p>
                 <IonButton
                   className="btn"
-                  onClick={loginViaGoogle}
+                  onClick={() => errorHandledLogin(loginViaGoogle)}
                   color="danger"
                 >
                   <IonIcon
@@ -182,7 +209,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                 <IonButton
                   className="btn"
                   color="secondary"
-                  onClick={loginViaFacebook}
+                  onClick={() => errorHandledLogin(loginViaFacebook)}
                 >
                   <IonIcon
                     slot="start"
@@ -194,7 +221,7 @@ export const Authentication: React.FC<PropsWithChildren<unknown>> = ({
                 {showAppleSignIn && (
                   <IonButton
                     className="btn"
-                    onClick={loginViaApple}
+                    onClick={() => errorHandledLogin(loginViaApple)}
                     color={"dark"}
                   >
                     <IonIcon
